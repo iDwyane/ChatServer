@@ -18,21 +18,25 @@ class IphoneChat(Protocol):
         if len(a) > 1:
             comman = a[0]
             content = a[1]
-            # return
+
             msg = ""
             if comman == "iam":
                 self.name = content
                 msg = self.name + " has joind"
             elif comman == "msg":
+                # if not self.name:
+                #     self.name = "某人"
                 msg = self.name + ":" + content
+
+            for c in self.factory.clients:
+                c.message(msg)
 
             print(msg)
 
-    #         for c in self.factory.clients:
-    #             c.message(msg)
-    #
-    # def message(self,message):
-    #     self.transport.write(message + "\n")
+    def message(self,message):
+        # 将字符转成字节
+        msg = bytes((message + "\n"), encoding="utf8")
+        self.transport.write(msg)
 
 factory = Factory()
 factory.protocol = IphoneChat
